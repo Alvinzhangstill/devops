@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="/static/blog/bootstrap/css/bootstrap.css">
+
+</head>
+<body>
+
+<div class="container">
+    <div class="row" style="margin-top: 100px">
+        <div class="col-md-4 col-md-offset-4">
+            <form action="/login_form/" method="post">
+                {% csrf_token %}
+{#                {{ obj.username }} <p>{{ obj.errors.username.0 }}</p>#}
+{#                {{ obj.password.label }}{{ obj.password }} <p>{{ obj.errors.password.0 }}</p>#}
+{#                {{ obj.email.label }}{{ obj.email }} <p>{{ obj.errors.email.0 }}</p>#}
+                {{ obj.as_p }}
+
+                <input type="submit" href="/login_form" value="提交" class="btn btn-primary">
+            </form>
+        </div>
+    </div>
+
+</div>
+<script src="/static/js/jquery-3.3.1.min.js"></script>
+
+<script>
+
+</script>
+</body>
+</html>

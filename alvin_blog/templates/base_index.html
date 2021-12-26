@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+{% block css %}
+    <style type="text/css">
+        #avatar {
+            height: 56px;
+            width: 56px;
+            border: 1px solid grey;
+        }
+
+        .article {
+            padding: 12px 0;
+        }
+
+    .pub_info{
+        margin-top: 15px;
+
+    }
+    </style>
+{% endblock %}
+{% block article_content %}
+    <div class="col-md-6">
+        {% for article in article_list %}
+            <div class="article">
+                <h5><a href="">{{ article.title }}</a></h5>
+                <span class="media-left">
+                    <a href=""><img id="avatar" src="/media/{{ article.user.avatar }}" alt=""></a>
+                </span>
+                <span class="media-right">{{ article.desc }}</span>
+                <div class="small pub_info">
+                    <a href="">{{ article.user.username }}</a> &nbsp;&nbsp;&nbsp;
+                    <a href="">发布于&nbsp;{{ article.create_time|date:"Y-m-d H:i" }}</a>
+                    <a href=""><span class="glyphicon glyphicon-thumbs-up"></span>顶({{ article.up_count }})</a>
+                    <a href=""><span class="glyphicon glyphicon-thumbs-down"></span>踩({{ article.down_count }})</a>
+                    <a href=""><span class="glyphicon glyphicon-envelope"></span>评论数({{ article.comment_count }})</a>
+                </div>
+            </div>
+            <hr>
+        {% endfor %}
+    </div>
+{% endblock %}
+{% block index %}
+    {{ request.user.username|upper }}
+{% endblock index %}

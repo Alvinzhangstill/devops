@@ -1,0 +1,105 @@
+{% extends 'base_site.html' %}
+{% block css %}
+    <style type="text/css">
+        #div_digg {
+            float: right;
+            margin-bottom: 10px;
+            margin-right: 30px;
+            font-size: 12px;
+            width: 125px;
+            text-align: center;
+            margin-top: 10px;
+        }
+
+        .diggit {
+            float: left;
+            width: 46px;
+            height: 52px;
+            background: url(/static/blog/pic/upup.gif) no-repeat;
+            text-align: center;
+            cursor: pointer;
+            margin-top: 2px;
+            padding-top: 5px;
+        }
+
+        .diggnum {
+            font-size: 14px;
+            color: #075db3;
+        }
+
+        .buryit {
+            font-size: 14px;
+            color: #075db3;
+        }
+
+        .buryit {
+            float: right;
+            margin-left: 20px;
+            width: 46px;
+            height: 52px;
+            background: url(/static/blog/pic/downdown.gif) no-repeat;
+            text-align: center;
+            cursor: pointer;
+            margin-top: 2px;
+            padding-top: 5px;
+        }
+    </style>
+{% endblock %}
+{% block content %}
+    <h3 class="text-center">{{ article.title }}</h3>
+    <div class="content">
+        {{ article.content |safe }}
+    </div>
+    <div id="div_digg">
+        {% csrf_token %}
+        <div class="diggit action">
+            <span class="diggnum" id="digg_count">{{ article.up_count }}</span>
+        </div>
+        <div class="buryit action">
+            <span class="burynum" id="bury_count">{{ article.down_count }}</span>
+        </div>
+        <div class="clear clearfix"></div>
+        <div class="diggword" id="digg_tips">
+        </div>
+    </div>
+
+    <div class="comment">
+
+    </div>
+
+{% endblock %}
+
+{% block js %}
+    <script type="text/javascript">
+        $('#div_digg .action').click(function () {
+
+            let obj = $(this).children('span');
+            let is_up = $(this).hasClass('diggit');
+            alert(is_up);
+            $.ajax({
+                url: '/digg/',
+                method: "POST",
+                data: {
+                    is_up: is_up,
+                    article_id: "{{ article.nid }}",
+                    csrfmiddlewaretoken: $("[name='csrfmiddlewaretoken']").val(),
+                },
+                success: function (data) {
+                    console.log(data);
+                    if (data.state) {
+                        let val = parseInt(obj.text());
+                        obj.text(val + 1);
+                    } else {
+                        var val = data.handled ? '您已经推荐过' : '您已经反对过';
+                        $('#digg_tips').html(val);
+                        setTimeout(function () {
+                            $('#digg_tips').html('')
+                        }, 3000)
+                    }
+                }
+            })
+        })
+
+    </script>
+
+{% endblock %}

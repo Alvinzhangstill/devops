@@ -1,0 +1,22 @@
+{% extends 'base_site.html' %}
+{% block content %}
+    {% for article in article_list %}
+        <div class="article">
+            <h5><a href="/{{ username }}/article/{{ article.nid }}">{{ article.title }}</a></h5>
+            <span class="media-left">
+                    <a href=""><img id="avatar" src="/media/{{ article.user.avatar }}" alt=""></a>
+                </span>
+            <span class="media-right">{{ article.desc }}</span>
+            <div class="small pub_info pull-right">
+                <a href="">{{ article.user.username }}</a> &nbsp;&nbsp;&nbsp;
+                <a href="">发布于&nbsp;{{ article.create_time|date:"Y-m-d H:i" }}</a>
+                <a href=""><span class="glyphicon glyphicon-thumbs-up"></span>顶({{ article.up_count }})</a>
+                <a href=""><span
+                        class="glyphicon glyphicon-thumbs-down"></span>踩({{ article.down_count }})</a>
+                <a href=""><span
+                        class="glyphicon glyphicon-envelope"></span>评论数({{ article.comment_count }})</a>
+            </div>
+        </div>
+        <hr>
+    {% endfor %}
+{% endblock %}

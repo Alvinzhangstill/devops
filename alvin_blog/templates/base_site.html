@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>{% block title %}{% endblock %}</title>
+    <link rel="stylesheet" href="/static/blog/bootstrap/css/bootstrap.css">
+    <script src="/static/js/jquery-3.3.1.min.js"></script>
+    <script src="/static/blog/bootstrap/js/bootstrap.js"></script>
+    <style type="text/css">
+        #avatar {
+            height: 56px;
+            width: 56px;
+            border: 1px solid grey;
+        }
+
+        .article {
+            padding: 12px 0;
+        }
+
+        .pub_info {
+            margin-top: 15px;
+
+        }
+
+        li {
+            list-style: none;
+        }
+
+        {#.container-fluid {#}
+        {#    padding-top: 20px;#}
+
+    </style>
+    {% block css %}{% endblock %}
+</head>
+<body>
+<div class="navbar navbar-default">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
+                    data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/{{ username }}">{{ blog.title }}</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav">
+                <li class="active"><a href="/{{ username }}">首页 <span class="sr-only">(current)</span></a></li>
+                <li><a href="#">推荐</a></li>
+            </ul>
+        </div>
+    </div>
+</div>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-3">
+            {% load my_tag %}
+            {% get_side_data username %}
+        </div>
+        <div class="col-md-7">
+            {% block content %}
+
+            {% endblock %}
+        </div>
+    </div>
+</div>
+</body>
+{% block js %}
+
+{% endblock %}
+</html>

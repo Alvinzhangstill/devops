@@ -1,0 +1,152 @@
+{% extends 'base.html' %}
+{% block css %}
+    <style type="text/css">
+        body {
+            margin: 0;
+            padding: 0;
+        }
+
+        .line {
+            border-bottom: 1px solid rgba(0, 0, 0, .1);
+            padding-bottom: 5px;
+            font-family: -apple-system, Noto Sans, Helvetica Neue, Helvetica, Nimbus Sans L, Arial, Liberation Sans, PingFang SC, Hiragino Sans GB, Noto Sans CJK SC, Source Han Sans SC, Source Han Sans CN, Microsoft YaHei, Wenquanyi Micro Hei, WenQuanYi Zen Hei, ST Heiti, SimHei, WenQuanYi Zen Hei Sharp, sans-serif;
+
+        }
+
+        .error {
+            color: red;
+            font-family: -apple-system, Noto Sans, Helvetica Neue, Helvetica, Nimbus Sans L, Arial, Liberation Sans, PingFang SC, Hiragino Sans GB, Noto Sans CJK SC, Source Han Sans SC, Source Han Sans CN, Microsoft YaHei, Wenquanyi Micro Hei, WenQuanYi Zen Hei, ST Heiti, SimHei, WenQuanYi Zen Hei Sharp, sans-serif;
+
+        }
+
+    </style>
+{% endblock %}
+{% block index %}
+    <div class="container" style="padding-top: 100px">
+        <div class="row" style="margin-top: 80px">
+            <div class="col-md-6 col-md-offset-3">
+                <h4 class="line">注册新用户</h4>
+                <form id="form">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <label for="username">{{ user_info.username.label }}</label>
+                        {{ user_info.username }}
+                        <span class="error pull-right"></span>
+                    </div>
+                    <div class="form-group">
+                        <label for="password">{{ user_info.password.label }}</label>
+                        {{ user_info.password }}
+                        <span class="error pull-right"></span>
+                    </div>
+                    <div class="form-group">
+                        <label for="re_password">{{ user_info.re_password.label }}</label>
+                        {{ user_info.re_password }}
+                        <span class="error pull-right"></span>
+                    </div>
+                    <div class="form-group">
+                        <label for="email">{{ user_info.email.label }}</label>
+                        {{ user_info.email }}
+                        <span class="error pull-right"></span>
+                    </div>
+                    <div class="form-group">
+                        <label for="telephone">{{ user_info.telephone.label }}</label>
+                        {{ user_info.telephone }}
+                        <span class="error pull-right"></span>
+                    </div>
+
+                    <label for="avatar">
+                        <img src="/media/avatars/u.jpg" id="avatar_img" alt="默认头像"
+                             style="width: 80px;height: 80px;margin-bottom: 10px">
+                        <input type="file" id="avatar" style="display: block;">
+                    </label>
+
+                    {#                <div class="row">#}
+                    {#                    <div class="col-md-6">#}
+                    {#                        <img src="/valid_code" alt="验证码" style="width: 160px;height: 45px;margin-top: 10px"#}
+                    {#                             id="valid_img">#}
+                    {#                    </div>#}
+                    {#                    <div class="col-md-6 form-group pull-right">#}
+                    {#                        <label for="valid_code">验证码</label>#}
+                    {#                        <input type="text" class="form-control" id="valid_code">#}
+                    {#                    </div>#}
+                    {#                </div>#}
+                </form>
+                <button class="btn btn-primary" id="login_btn">登陆</button>
+                <span class="error"></span>
+                <button class="btn btn-success pull-right" id="reg_btn" href="/register/">注册</button>
+
+            </div>
+        </div>
+
+    </div>
+{% endblock %}
+
+{% block js %}
+
+
+    <script>
+        {#  验证码刷新  #}
+        $("#valid_img").click(function () {
+            $(this)[0].src += '?'
+        });
+
+
+        $('#avatar').change(function () {
+
+            let file_obj = $(this)[0].files[0];
+            let reader = new FileReader();
+            reader.readAsDataURL(file_obj);
+            console.log(reader.result);
+
+            {#  修改图片src属性  #}
+            reader.onload = function () {
+                $('#avatar_img').attr("src", reader.result)
+            };
+        });
+
+        let formdata = new FormData();
+        $('#reg_btn').click(function () {
+            {#循环改写#}
+            {#console.log($('#form').serializeArray());#}
+            {#var reg_data = $('#form').serializeArray();#}
+            {#$.each(reg_data,function (index,data) {#}
+            {#    formdata.append(data.name,data.value)});#}
+            {#formdata.append({'username': $('username').val(), "password": $("password").val()});#}
+            formdata.append('username', $('#username').val());
+            formdata.append("password", $("#password").val());
+            formdata.append("re_password", $("#re_password").val());
+            formdata.append("email", $("#email").val());
+            formdata.append("telephone", $("#telephone").val());
+            formdata.append("avatar", $("#avatar")[0].files[0]);
+            {# 添加 csrftoken #}
+            formdata.append("csrfmiddlewaretoken", $("[name='csrfmiddlewaretoken']")[0]["value"]);
+
+            $.ajax({
+                url: "",
+                type: "POST",
+                data: formdata,
+                {# 使用formdata必须要配置下面两个参数 #}
+                contentType: false,
+                processData: false,
+                success: function (data) {
+                    console.log(data);
+                    if (data.user) {
+                        //注册成功
+                        location.href = '/login'
+                    } else {
+                        //注册失败
+                        $('span.error').html("");
+                        $.each(data.msg, function (field, error_list) {
+                            if (field == "__all__") {
+                                $("#re_password").next().html(error_list[0])
+                            }
+                            $('#' + field).next('span').html(error_list[0])
+                        })
+                    }
+
+
+                }
+            })
+        });
+    </script>
+{% endblock %}
